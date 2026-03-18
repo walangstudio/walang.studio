@@ -6,30 +6,29 @@
 /* ----------------------------------------------------------------
    0. PLUGIN REGISTRATION
    ---------------------------------------------------------------- */
-gsap.registerPlugin(TextPlugin, ScrambleTextPlugin, CustomEase);
+gsap.registerPlugin(TextPlugin);
 
 /* ----------------------------------------------------------------
    1. CONFIG — single source of truth
    ---------------------------------------------------------------- */
 const CONFIG = {
   typewriter: {
-    charDelay:      0.08,   // seconds per char while typing
-    eraseDelay:     0.045,  // seconds per char while erasing
-    holdDuration:   2.0,    // seconds to hold completed word
-    pauseAfterErase: 0.35,  // seconds before next word
+    holdDuration:        2.0,   // seconds to hold completed word
+    studioHoldDuration: 30.0,   // seconds to hold "studio"
+    pauseAfterErase:     0.35,  // seconds before next word
   },
   flicker: {
-    maxOpacity:   0.07,
+    maxOpacity:   0.18,
     baseInterval: 0.11,
   },
   scratch: {
-    minInterval:  5,    // seconds
-    maxInterval:  14,
+    minInterval:  2,    // seconds
+    maxInterval:  7,
     duration:     0.55,
   },
   grain: {
     fps:     24,
-    opacity: 0.18,
+    opacity: 0.35,
   },
   transition: {
     totalDuration: 1.4,
@@ -41,25 +40,33 @@ const CONFIG = {
    Fetches from /api/words.php, cycles through two batches.
    ---------------------------------------------------------------- */
 const WordsAPI = (() => {
-  let nextBatch = 1;
+  const _pool = [
+    'kwenta','tarabaho','pera','magawa','makain','silbi','dahilan',
+    'katuwiran','mahal','bukas','tulong','pangarap','hirap','layunin',
+    'kalayaan','saysay','pagasa','lakas','buhay','daan',
+  ];
+
+  function _shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function _fallback() {
+    const shuffled = _shuffle([..._pool]);
+    const count = 10 + Math.floor(Math.random() * 11); // 10–20
+    const words = shuffled.slice(0, count);
+    words.push('studio');
+    return words;
+  }
 
   function fetchWords() {
-    return fetch('api/words.php?batch=' + nextBatch)
+    return fetch('api/words.php')
       .then(r => r.json())
-      .then(data => {
-        nextBatch = data.next || (nextBatch === 1 ? 2 : 1);
-        return data.words;
-      })
-      .catch(() => {
-        // Fallback if PHP not available (direct file:// access)
-        const fallback = [
-          ['kwenta','tarabaho','pera','magawa','makain','silbi','dahilan','katuwiran','mahal','bukas'],
-          ['tulong','pangarap','hirap','layunin','kalayaan','saysay','pagasa','lakas','buhay','daan'],
-        ];
-        const words = fallback[(nextBatch - 1) % fallback.length];
-        nextBatch = nextBatch === 1 ? 2 : 1;
-        return words;
-      });
+      .then(data => data.words)
+      .catch(_fallback);
   }
 
   return { fetchWords };
@@ -161,7 +168,7 @@ const FilmGrain = (() => {
       d[i]     = v;
       d[i + 1] = v;
       d[i + 2] = v;
-      d[i + 3] = 38; // ~15% per-pixel alpha; canvas opacity does the rest
+      d[i + 3] = 160; // ~63% per-pixel alpha; canvas opacity does the rest
     }
     ctx.putImageData(img, 0, 0);
   }
@@ -192,10 +199,6 @@ const FilmGrain = (() => {
 const Flicker = (() => {
   const el = document.getElementById('flicker-overlay');
   let tl   = null;
-
-  CustomEase.create('flickerEase',
-    'M0,0 C0.08,0 0.15,1 0.25,1 0.35,1 0.35,0 0.5,0 0.52,0 0.6,1 0.7,1 0.82,0 1,0'
-  );
 
   function buildTimeline() {
     tl = gsap.timeline({ repeat: -1 });
@@ -308,42 +311,36 @@ const Cursor = (() => {
    8. TYPEWRITER — drives #dynamic-word with TextPlugin
    ---------------------------------------------------------------- */
 const Typewriter = (() => {
-  const el    = document.getElementById('dynamic-word');
-  let   words = [];
-  let   index = 0;
+  const el     = document.getElementById('dynamic-word');
+  let   words  = [];
+  let   index  = 0;
   let   active = false;
-  let   currentTween = null;
 
   function wait(ms) {
     return new Promise(r => setTimeout(r, ms));
   }
 
-  function typeWord(word) {
-    return new Promise(resolve => {
-      Cursor.solid();
-      currentTween = gsap.to(el, {
-        duration: word.length * CONFIG.typewriter.charDelay,
-        text: { value: word, delimiter: '' },
-        ease: 'none',
-        onComplete: resolve,
-      });
-    });
+  async function typeWord(word) {
+    Cursor.solid();
+    el.textContent = '';
+    for (const char of word) {
+      if (!active) return;
+      // ~5% chance of a brief hesitation between keystrokes
+      const delay = Math.random() < 0.05
+        ? 200 + Math.random() * 200
+        : 65  + Math.random() * 95;
+      await wait(delay);
+      el.textContent += char;
+    }
   }
 
-  function eraseWord(word) {
-    return new Promise(resolve => {
-      Cursor.solid();
-      const proxy = { n: word.length };
-      currentTween = gsap.to(proxy, {
-        n: 0,
-        duration: word.length * CONFIG.typewriter.eraseDelay,
-        ease: 'none',
-        onUpdate() {
-          el.textContent = word.substring(0, Math.ceil(proxy.n));
-        },
-        onComplete: resolve,
-      });
-    });
+  async function eraseWord() {
+    Cursor.solid();
+    while (el.textContent.length > 0) {
+      if (!active) return;
+      await wait(35 + Math.random() * 45);
+      el.textContent = el.textContent.slice(0, -1);
+    }
   }
 
   async function loop() {
@@ -354,14 +351,18 @@ const Typewriter = (() => {
       }
 
       const word = words[index++];
+      const hold = word === 'studio'
+        ? CONFIG.typewriter.studioHoldDuration * 1000
+        : CONFIG.typewriter.holdDuration * 1000;
 
       await typeWord(word);
-      Cursor.blink();
-      await wait(CONFIG.typewriter.holdDuration * 1000);
-
       if (!active) break;
 
-      await eraseWord(word);
+      Cursor.blink();
+      await wait(hold);
+      if (!active) break;
+
+      await eraseWord();
       await wait(CONFIG.typewriter.pauseAfterErase * 1000);
     }
   }
@@ -373,15 +374,8 @@ const Typewriter = (() => {
     loop();
   }
 
-  function pause() {
-    active = false;
-    if (currentTween) currentTween.pause();
-  }
-
-  function resume() {
-    active = true;
-    loop();
-  }
+  function pause()  { active = false; }
+  function resume() { active = true; loop(); }
 
   return { start, pause, resume };
 })();
@@ -454,12 +448,7 @@ const FilmTransition = (() => {
         tl.call(() => { intertitleText.textContent = ''; }, null, 0.27);
         tl.to(intertitleText, {
           duration: 0.62,
-          scrambleText: {
-            text:        original,
-            chars:       'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?-–',
-            speed:       0.38,
-            revealDelay: 0.18,
-          },
+          text: { value: original, delimiter: '' },
           ease: 'none',
         }, 0.43);
       }

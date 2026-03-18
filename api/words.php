@@ -2,18 +2,16 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-$batches = [
-    1 => ['kwenta', 'tarabaho', 'pera', 'magawa', 'makain', 'silbi', 'dahilan', 'katuwiran', 'mahal', 'bukas'],
-    2 => ['tulong', 'pangarap', 'hirap', 'layunin', 'kalayaan', 'saysay', 'pagasa', 'lakas', 'buhay', 'daan'],
+$pool = [
+    'kwenta', 'trabaho', 'pera', 'magawa', 'makain', 'silbi', 'dahilan',
+    'katuwiran', 'kinabukasan', 'katinuan', 'tulong', 'pangarap', 'masabi', 'layunin',
+    'kalayaan', 'saysay', 'pagasa', 'lakas', 'buhay', 'patutunguhan',
+    'tulugan', 'galang', 'emosyon', 'kasama', 'karapatan', 'pagkakataon'
 ];
 
-$batch = isset($_GET['batch']) ? (int) $_GET['batch'] : 1;
-if ($batch < 1 || $batch > count($batches)) {
-    $batch = 1;
-}
+shuffle($pool);
+$count = rand(10, 20);
+$words = array_slice($pool, 0, $count);
+$words[] = 'studio';
 
-echo json_encode([
-    'words' => $batches[$batch],
-    'batch' => $batch,
-    'next'  => ($batch % count($batches)) + 1,
-]);
+echo json_encode(['words' => $words]);
