@@ -14,3 +14,15 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# puwit backend (runtime/environment files)
+_puwit/.env
+_puwit/storage/
+_puwit/tests/
+_puwit/vendor/
+
+.claude/
+
+node_modules/
+dist/
+*.zip
