@@ -5,6 +5,20 @@ const { minify: minifyJS }   = require('terser');
 const CleanCSS               = require('clean-css');
 const { minify: minifyHTML } = require('html-minifier-terser');
 
+function copyDir(src, dest, ignore = []) {
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (ignore.includes(entry.name)) continue;
+    const srcPath  = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath, ignore);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 async function build() {
   fs.rmSync('dist', { recursive: true, force: true });
   fs.mkdirSync('dist/api', { recursive: true });
@@ -33,13 +47,27 @@ async function build() {
   fs.writeFileSync('dist/index.html', htmlOut);
   console.log('index.html');
 
-  // PHP — copy as-is
+  // .htaccess
+  fs.copyFileSync('.htaccess', 'dist/.htaccess');
+  console.log('.htaccess');
+
+  // PHP api/
   for (const f of fs.readdirSync('api')) {
     fs.copyFileSync(path.join('api', f), path.join('dist/api', f));
     console.log('api/' + f);
   }
 
+  // backend/
+  copyDir('backend', 'dist/backend');
+  console.log('backend/');
+
+  // _puwit/ — skip .env and tests (environment-specific / dev-only)
+  copyDir('_puwit', 'dist/_puwit', ['.env', 'tests']);
+  console.log('_puwit/');
+
   console.log('\ndist/ ready');
+  console.log('Remember to create on server:');
+  console.log('  _puwit/.env — DB_DRIVER, JWT_SECRET, CORS_ORIGINS');
 }
 
 build().catch(err => { console.error(err); process.exit(1); });

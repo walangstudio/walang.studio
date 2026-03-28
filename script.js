@@ -37,13 +37,14 @@ const CONFIG = {
 
 /* ----------------------------------------------------------------
    2. WORDS API
-   Fetches from /api/words.php, cycles through two batches.
+   Fetches from /backend/api/word directly (public model, no auth required).
    ---------------------------------------------------------------- */
 const WordsAPI = (() => {
   const _pool = [
-    'kwenta','tarabaho','pera','magawa','makain','silbi','dahilan',
-    'katuwiran','mahal','bukas','tulong','pangarap','hirap','layunin',
-    'kalayaan','saysay','pagasa','lakas','buhay','daan',
+    'kwenta','trabaho','pera','magawa','makain','silbi','dahilan',
+    'katuwiran','kinabukasan','katinuan','tulong','pangarap','masabi','layunin',
+    'kalayaan','saysay','pagasa','lakas','buhay','patutunguhan',
+    'tulugan','galang','emosyon','kasama','karapatan','pagkakataon',
   ];
 
   function _shuffle(arr) {
@@ -56,16 +57,22 @@ const WordsAPI = (() => {
 
   function _fallback() {
     const shuffled = _shuffle([..._pool]);
-    const count = 10 + Math.floor(Math.random() * 11); // 10–20
+    const count = 10 + Math.floor(Math.random() * 11);
     const words = shuffled.slice(0, count);
     words.push('studio');
     return words;
   }
 
   function fetchWords() {
-    return fetch('api/words.php')
-      .then(r => r.json())
-      .then(data => data.words)
+    return fetch('backend/api/word?per_page=26')
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => {
+        if (!Array.isArray(data.data) || data.data.length < 10) throw new Error();
+        const pool = _shuffle(data.data.map(w => w.text));
+        const words = pool.slice(0, 10 + Math.floor(Math.random() * 11));
+        words.push('studio');
+        return words;
+      })
       .catch(_fallback);
   }
 
@@ -122,7 +129,7 @@ const SectionLoader = (() => {
     if (!contentEl) return Promise.resolve();
 
     return fetch('api/' + sectionName + '.php')
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(data => {
         _cache[sectionName] = true;
         contentEl.innerHTML = RENDERERS[sectionName](data);
