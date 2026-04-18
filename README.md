@@ -9,7 +9,7 @@ WS initial site, PHP backend via [puwit](https://github.com/walangstudio/puwit).
 | Layer | Tech |
 |-------|------|
 | Frontend | Vanilla JS, GSAP 3, CSS |
-| Backend | PHP 8.2 (puwit micro-framework) |
+| Backend | PHP 8.0+ (puwit micro-framework) |
 | Database | SQLite 3 |
 | Web server | Apache + mod_rewrite |
 | Build | Node.js (Terser, CleanCSS, html-minifier-terser) |
@@ -31,7 +31,7 @@ walang.studio/
 ├── backend/
 │   ├── index.php       — puwit entry point (sets PUWIT_ROOT → _puwit/, strips /backend prefix)
 │   └── .htaccess       — rewrites /backend/* to index.php
-├── _puwit/             — puwit source (vendor/ gitignored — run composer before building)
+├── _puwit/             — puwit git submodule (vendor/ gitignored — run composer before building)
 │   ├── src/
 │   ├── composer.json
 │   ├── composer.lock
@@ -51,13 +51,21 @@ walang.studio/
 - Node.js + npm
 - Composer (on this machine: `F:\bin\composer\composer.bat`)
 
-### 1. Install frontend dependencies
+### 1. Clone with submodule
+
+```bash
+git clone --recurse-submodules https://github.com/walangstudio/walang.studio
+# or if already cloned:
+git submodule update --init
+```
+
+### 2. Install frontend dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Install puwit PHP dependencies
+### 3. Install puwit PHP dependencies
 
 ```bash
 cd _puwit
@@ -67,7 +75,7 @@ cd ..
 
 This must be run before `node build.js` since vendor/ is gitignored.
 
-### 3. Virtual host
+### 4. Virtual host
 
 AMPPS vhost config: `F:\bin\ampps\apache\conf\extra\httpd-custom-vhosts.conf`
 
@@ -78,7 +86,7 @@ Add-Content -Path "C:\Windows\System32\drivers\etc\hosts" -Value "127.0.0.1   wa
 
 Then restart Apache via AMPPS.
 
-### 4. Create `_puwit/.env`
+### 5. Create `_puwit/.env`
 
 ```env
 APP_ENV=development
@@ -92,11 +100,14 @@ JWT_TTL=3600
 PUWIT_ADMIN_KEY=<choose a temporary bootstrap key>
 
 CORS_ORIGINS=*
+
+# Optional: enable Scalar API docs UI at /backend/docs
+# API_DOCS=true
 ```
 
 `DB_PATH` can be omitted — defaults to `_puwit/storage/database.sqlite` via `PUWIT_ROOT` in `backend/index.php`.
 
-### 5. Bootstrap puwit (first run only)
+### 6. Bootstrap puwit (first run only)
 
 Creates the admin key, word model (marked public), and seeds data. Replace `BOOTSTRAP_KEY` with the value you set as `PUWIT_ADMIN_KEY` in `.env`, and replace `ADMIN_KEY` with the key returned in step one.
 
@@ -124,7 +135,7 @@ done
 
 After this, remove `PUWIT_ADMIN_KEY` from `_puwit/.env`.
 
-### 6. Verify
+### 7. Verify
 
 ```bash
 # No auth header — word model is public
@@ -199,9 +210,18 @@ JWT_TTL=3600
 CORS_ORIGINS=https://walang.studio
 ```
 
-Make `_puwit/storage/` writable by PHP (chmod 755 via cPanel).
+**Fix permissions after extraction** — upload `chmod.php` (in project root) to `public_html/`, visit `https://walang.studio/chmod.php` once. It sets 755 on all dirs and 644 on all files under `public_html/`, then self-deletes.
 
-If bootstrapping a fresh server (no DB in the zip), run the step 5 curl commands against `https://walang.studio/backend` after upload.
+If bootstrapping a fresh server (no DB in the zip), run the step 6 curl commands against `https://walang.studio/backend` after upload.
+
+### Updating puwit
+
+```bash
+git submodule update --remote _puwit
+git add _puwit
+git commit -m "Update puwit to latest"
+node build.js
+```
 
 ---
 
