@@ -64,7 +64,7 @@ const WordsAPI = (() => {
   }
 
   function fetchWords() {
-    return fetch('backend/api/word?per_page=26')
+    return fetch('/api/words')
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(data => {
         if (!Array.isArray(data.data) || data.data.length < 10) throw new Error();
@@ -81,7 +81,7 @@ const WordsAPI = (() => {
 
 /* ----------------------------------------------------------------
    3. SECTION LOADER
-   Lazy-fetches news/apps/games from PHP; caches results.
+   Lazy-fetches news/apps/games from the Worker API; caches results.
    ---------------------------------------------------------------- */
 const SectionLoader = (() => {
   const _cache = {};
@@ -128,7 +128,7 @@ const SectionLoader = (() => {
     const contentEl = document.getElementById(sectionName + '-content');
     if (!contentEl) return Promise.resolve();
 
-    return fetch('api/' + sectionName + '.php')
+    return fetch('/api/' + sectionName)
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(data => {
         _cache[sectionName] = true;

@@ -1,5 +1,0 @@
-Options -Indexes
-RewriteEngine On
-
-# Block direct web access to puwit source
-RewriteRule ^_puwit(/|$) - [F,L]

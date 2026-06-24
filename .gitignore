@@ -21,3 +21,7 @@ Thumbs.db
 node_modules/
 dist/
 *.zip
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars

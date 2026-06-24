@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "walang-studio",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-12-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "walang-studio",
+      // Fill after `wrangler d1 create walang-studio`. Not needed for --local dev.
+      "database_id": "REPLACE_AFTER_d1_create"
+    }
+  ],
+  "observability": { "enabled": true }
+}
