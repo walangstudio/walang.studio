@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import type { Context } from 'hono'
 
 type Env = { DB: D1Database; ADMIN_KEY: string }
 
@@ -44,6 +45,11 @@ admin.use('*', async (c, next) => {
   await next()
 })
 
+// D1 surfaces constraint/type failures as thrown errors; turn them into a clean
+// 400 for the admin instead of an opaque 500.
+const writeErr = (c: Context, e: unknown) =>
+  c.json({ error: e instanceof Error ? e.message.replace(/^D1_ERROR:\s*/, '') : 'write failed' }, 400)
+
 admin.post('/:table', async (c) => {
   const table = c.req.param('table')
   const cols = TABLES[table]
@@ -52,8 +58,12 @@ admin.post('/:table', async (c) => {
   const used = cols.filter((k) => k in body)
   if (!used.length) return c.json({ error: 'no valid fields' }, 400)
   const sql = `INSERT INTO ${table} (${used.join(',')}) VALUES (${used.map(() => '?').join(',')})`
-  const res = await c.env.DB.prepare(sql).bind(...used.map((k) => body[k])).run()
-  return c.json({ id: res.meta.last_row_id }, 201)
+  try {
+    const res = await c.env.DB.prepare(sql).bind(...used.map((k) => body[k])).run()
+    return c.json({ id: res.meta.last_row_id }, 201)
+  } catch (e) {
+    return writeErr(c, e)
+  }
 })
 
 admin.patch('/:table/:id', async (c) => {
@@ -64,8 +74,12 @@ admin.patch('/:table/:id', async (c) => {
   const used = cols.filter((k) => k in body)
   if (!used.length) return c.json({ error: 'no valid fields' }, 400)
   const sql = `UPDATE ${table} SET ${used.map((k) => `${k}=?`).join(',')} WHERE id=?`
-  await c.env.DB.prepare(sql).bind(...used.map((k) => body[k]), c.req.param('id')).run()
-  return c.json({ ok: true })
+  try {
+    await c.env.DB.prepare(sql).bind(...used.map((k) => body[k]), c.req.param('id')).run()
+    return c.json({ ok: true })
+  } catch (e) {
+    return writeErr(c, e)
+  }
 })
 
 admin.delete('/:table/:id', async (c) => {

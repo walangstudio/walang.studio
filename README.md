@@ -1,13 +1,14 @@
 # walang.studio
 
-Retro B&W film SPA on Cloudflare. One Worker serves the static site and a small
-JSON API backed by D1.
+Retro CRT-TV SPA on Cloudflare. One Worker serves the static site and a small
+JSON API backed by D1. The homepage typewriter pulls its words from D1; the
+games/apps channels are currently static in the markup.
 
 ## Stack
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Vanilla JS + GSAP 3 + CSS (in `public/`) |
+| Frontend | Vanilla JS + Canvas + Web Audio, no framework (in `public/`) |
 | Backend | Cloudflare Worker, [Hono](https://hono.dev) router |
 | Database | Cloudflare D1 (SQLite) |
 | Hosting | Workers Static Assets (single deploy, free tier) |
@@ -16,7 +17,7 @@ JSON API backed by D1.
 ## Layout
 
 ```
-public/            static site — index.html, script.js, styles.css
+public/            static site — index.html, css/tv2.css, js/*.js, image-slot.js
 src/index.ts       Worker: serves /api/* from D1, assets binding serves the rest
 migrations/        D1 schema + seed
 wrangler.jsonc     Worker config (assets + D1 binding)

@@ -3,6 +3,10 @@
   "name": "walang-studio",
   "main": "src/index.ts",
   "compatibility_date": "2025-12-01",
+  "routes": [
+    { "pattern": "walang.studio/*", "zone_name": "walang.studio" },
+    { "pattern": "www.walang.studio/*", "zone_name": "walang.studio" }
+  ],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
@@ -13,8 +17,7 @@
     {
       "binding": "DB",
       "database_name": "walang-studio",
-      // Fill after `wrangler d1 create walang-studio`. Not needed for --local dev.
-      "database_id": "REPLACE_AFTER_d1_create"
+      "database_id": "e9540143-5d6c-4688-993a-3943432613a8"
     }
   ],
   "observability": { "enabled": true }

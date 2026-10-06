@@ -29,8 +29,9 @@ CREATE TABLE games (
 INSERT INTO words (text) VALUES
 ('kwenta'),('trabaho'),('pera'),('magawa'),('makain'),('silbi'),('dahilan'),
 ('katuwiran'),('kinabukasan'),('katinuan'),('tulong'),('pangarap'),('masabi'),('layunin'),
-('kalayaan'),('saysay'),('pagasa'),('lakas'),('buhay'),('patutunguhan'),
-('tulugan'),('galang'),('emosyon'),('kasama'),('karapatan'),('pagkakataon');
+('kalayaan'),('saysay'),('pag-asa'),('lakas'),('buhay'),('patutunguhan'),
+('tulugan'),('galang'),('emosyon'),('kasama'),('karapatan'),('pagkakataon'),
+('tulog'),('hiya'),('utang na loob'),('ambag'),('boses'),('malay'),('knowledge'),('power');
 
 INSERT INTO news (date, headline, body, sort) VALUES
 ('March, 1926','Studio Announces New Season of Productions','The studio has confirmed a full slate of moving pictures for the forthcoming year. Titles include works of drama, comedy, and spectacle. Details to follow in due course.',4),

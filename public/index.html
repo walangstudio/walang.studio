@@ -1,139 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>walang.studio</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>walang studio</title>
+<link rel="stylesheet" href="css/tv2.css" />
+<style>
+  /* volume OSD blocks */
+  #osd-vol .vb {
+    display: inline-block; width: 0.55em; height: 0.78em; margin-right: 4px;
+    border: 1px solid var(--osd-green); vertical-align: -0.08em;
+  }
+  #osd-vol .vb.fill { background: var(--osd-green); }
+</style>
 </head>
 <body>
+<div id="tv">
+  <div id="screen">
 
-  <!-- ═══════════════════════════════════════════════════════════
-       FILM EFFECT OVERLAYS — fixed full-screen, pointer-events:none
-       ═══════════════════════════════════════════════════════════ -->
-  <div class="overlay overlay--scanlines" aria-hidden="true"></div>
-  <div class="overlay overlay--vignette"  aria-hidden="true"></div>
-  <canvas class="overlay overlay--grain"  id="grain-canvas" aria-hidden="true"></canvas>
-  <div class="overlay overlay--scratch"   id="film-scratch" aria-hidden="true"></div>
-  <div class="overlay overlay--flicker"   id="flicker-overlay" aria-hidden="true"></div>
-  <div class="overlay overlay--flash"     id="flash-overlay" aria-hidden="true"></div>
+    <div id="channels">
 
-  <!-- ═══════════════════════════════════════════════════════════
-       FILM FRAME EDGES — decorative sprocket-strip borders
-       ═══════════════════════════════════════════════════════════ -->
-  <div class="film-frame" aria-hidden="true">
-    <div class="film-frame__edge film-frame__edge--left"></div>
-    <div class="film-frame__edge film-frame__edge--right"></div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       MAIN CONTENT — all 5 sections stacked, one visible at a time
-       ═══════════════════════════════════════════════════════════ -->
-  <main class="site-main" id="site-main">
-
-    <!-- SCENE I: Home -->
-    <section class="section section--active" id="section-home" data-section="home">
-      <div class="section__inner">
-        <div class="hero">
-          <h1 class="hero__title">
-            <span class="hero__word hero__word--static">walang </span><span
-              class="hero__word hero__word--dynamic" id="dynamic-word"></span><span
-              class="hero__cursor" id="hero-cursor">|</span>
+      <!-- HOME — dead channel: real TV noise + original typewriter -->
+      <section class="channel" id="ch-hero" data-screen-label="Home (noise)">
+        <canvas id="hero-noise"></canvas>
+        <div class="hero-layout">
+          <h1 class="hero-line" id="hero-line">
+            <span class="hero-static">walang</span><span class="hero-dyn-wrap"><span
+              id="dynamic-word"></span><span class="hero-cursor" id="hero-cursor">|</span></span>
           </h1>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- SCENE II: News -->
-    <section class="section" id="section-news" data-section="news">
-      <div class="section__inner">
-        <h2 class="section__intertitle">
-          <span class="intertitle__rule"></span>
-          <span class="intertitle__text">Chapter II — The Dispatches</span>
-          <span class="intertitle__rule"></span>
-        </h2>
-        <div class="section__content" id="news-content">
-          <p class="section__loading">[ loading dispatches... ]</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCENE III: Apps -->
-    <section class="section" id="section-apps" data-section="apps">
-      <div class="section__inner">
-        <h2 class="section__intertitle">
-          <span class="intertitle__rule"></span>
-          <span class="intertitle__text">Chapter III — The Contraptions</span>
-          <span class="intertitle__rule"></span>
-        </h2>
-        <div class="section__content" id="apps-content">
-          <p class="section__loading">[ loading contraptions... ]</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCENE IV: Games -->
-    <section class="section" id="section-games" data-section="games">
-      <div class="section__inner">
-        <h2 class="section__intertitle">
-          <span class="intertitle__rule"></span>
-          <span class="intertitle__text">Chapter IV — The Amusements</span>
-          <span class="intertitle__rule"></span>
-        </h2>
-        <div class="section__content" id="games-content">
-          <p class="section__loading">[ loading amusements... ]</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCENE V: About -->
-    <section class="section" id="section-about" data-section="about">
-      <div class="section__inner">
-        <h2 class="section__intertitle">
-          <span class="intertitle__rule"></span>
-          <span class="intertitle__text">Chapter V — The Particulars</span>
-          <span class="intertitle__rule"></span>
-        </h2>
-        <div class="section__content">
-          <div class="about-card">
-            <p class="about-card__quote">"We make things that <em>move</em>."</p>
-            <p class="about-card__body">
-              walang.studio is an independent creative studio.<br>
-              We produce digital experiences of unusual character.<br>
-              Correspondence is welcomed.
-            </p>
-            <p class="about-card__contact">[ contact@walang.studio ]</p>
+      <!-- SMPTE MENU (AUX) -->
+      <section class="channel" id="ch-menu" data-screen-label="SMPTE Menu">
+        <div class="smpte">
+          <div class="smpte-top">
+            <div class="bar" style="background:var(--smpte-gray)"></div>
+            <div class="bar navbar-bar" data-target="ch-404" style="--bar-color:var(--smpte-yellow)">
+              <div class="vwrap"><div class="vlabel">GAMES</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-404" style="--bar-color:var(--smpte-cyan)">
+              <div class="vwrap"><div class="vlabel">APPS</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-404" style="--bar-color:var(--smpte-green)">
+              <div class="vwrap"><div class="vlabel">CONNECT</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-404" style="--bar-color:var(--smpte-magenta)">
+              <div class="vwrap"><div class="vlabel">CONTACT</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-404" style="--bar-color:var(--smpte-red)">
+              <div class="vwrap"><div class="vlabel">ABOUT</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar" style="background:var(--smpte-blue)"></div>
+          </div>
+          <div class="smpte-mid">
+            <div class="bar" style="flex:1;background:#0000bc"></div>
+            <div class="bar" style="flex:1;background:#131313"></div>
+            <div class="bar" style="flex:1;background:#bc00bc"></div>
+            <div class="bar" style="flex:1;background:#131313"></div>
+            <div class="bar" style="flex:1;background:#00bcbc"></div>
+            <div class="bar" style="flex:1;background:#131313"></div>
+            <div class="bar" style="flex:1;background:#b9b9b9"></div>
+          </div>
+          <div class="smpte-bot">
+            <div class="bar" style="flex:1.4;background:#00214c"></div>
+            <div class="bar" style="flex:1.4;background:#ffffff"></div>
+            <div class="bar" style="flex:1.4;background:#32006a"></div>
+            <div class="bar" style="flex:1.4;background:#0a0a0a"></div>
+            <div class="bar" style="flex:0.5;background:#000000"></div>
+            <div class="bar" style="flex:0.5;background:#1a1a1a"></div>
+            <div class="bar" style="flex:0.5;background:#262626"></div>
+            <div class="bar" style="flex:1.0;background:#0a0a0a"></div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-  </main>
+      <!-- GAMES — VIDEO 1: late-night product commercial -->
+      <section class="channel promo-channel" id="ch-games" data-screen-label="Games (commercial)">
+        <div class="promo-scroll scroll-region">
 
-  <!-- ═══════════════════════════════════════════════════════════
-       BOTTOM NAVIGATION — film intertitle style
-       ═══════════════════════════════════════════════════════════ -->
-  <nav class="film-nav" id="film-nav" role="navigation" aria-label="Main navigation" style="display:none">
-    <div class="film-nav__inner">
-      <!-- <a class="film-nav__link film-nav__link--active" href="#home"  data-target="home">Home</a> -->
-      <!-- <a class="film-nav__link" href="#news"  data-target="news">News</a> -->
-      <!-- <a class="film-nav__link" href="#apps"  data-target="apps">Apps</a> -->
-      <!-- <a class="film-nav__link" href="#games" data-target="games">Games</a> -->
-      <!-- <a class="film-nav__link" href="#about" data-target="about">About</a> -->
+          <div class="promo-spot">
+            <div class="promo-badge">★ AS SEEN ON TV ★</div>
+            <div class="promo-art"><image-slot id="game1" placeholder="Game key art"></image-slot></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">NOW PLAYING ON CHANNEL WALANG STUDIO</div>
+              <h2 class="promo-title">PIXEL PURSUIT</h2>
+              <p class="promo-tag">The arcade chase that never lets up!</p>
+              <ul class="promo-feats">
+                <li>OVER 50 HAND-BUILT LEVELS</li>
+                <li>2-PLAYER CO-OP ACTION</li>
+                <li>ENDLESS HIGH-SCORE MODE</li>
+              </ul>
+              <div class="promo-price"><span class="promo-burst">FREE<small>TO PLAY</small></span></div>
+              <a class="promo-cta" href="#">▶ PLAY NOW</a>
+            </div>
+          </div>
+
+          <div class="promo-spot alt">
+            <div class="promo-badge">★ NEW RELEASE ★</div>
+            <div class="promo-art"><image-slot id="game2" placeholder="Game key art"></image-slot></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">BUT WAIT — THERE'S MORE</div>
+              <h2 class="promo-title">NEON DRIFTER</h2>
+              <p class="promo-tag">Outrun the night in this synthwave racer!</p>
+              <ul class="promo-feats">
+                <li>HANDCRAFTED SYNTH SOUNDTRACK</li>
+                <li>GHOST-RACE YOUR FRIENDS</li>
+                <li>UNLOCKABLE CHROME RIDES</li>
+              </ul>
+              <div class="promo-price"><span class="promo-burst">FREE<small>TO PLAY</small></span></div>
+              <a class="promo-cta" href="#">▶ PLAY NOW</a>
+            </div>
+          </div>
+
+          <div class="promo-spot">
+            <div class="promo-badge">★ FAN FAVORITE ★</div>
+            <div class="promo-art"><image-slot id="game3" placeholder="Game key art"></image-slot></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">ACT NOW — OPERATORS STANDING BY</div>
+              <h2 class="promo-title">CRYPT CRAWLER</h2>
+              <p class="promo-tag">A pocket dungeon in every pocket!</p>
+              <ul class="promo-feats">
+                <li>ROGUELITE RUNS, NEVER THE SAME TWICE</li>
+                <li>120+ CURSED RELICS TO FIND</li>
+                <li>ONE-THUMB CONTROLS</li>
+              </ul>
+              <div class="promo-price"><span class="promo-burst">FREE<small>TO PLAY</small></span></div>
+              <a class="promo-cta" href="#">▶ PLAY NOW</a>
+            </div>
+          </div>
+
+          <div class="promo-end">▲ SCROLL UP TO RETURN TO THE MENU ▲</div>
+        </div>
+      </section>
+
+      <!-- APPS — VIDEO 2: home shopping network -->
+      <section class="channel shop-channel" id="ch-apps" data-screen-label="Apps (shopping)">
+        <div class="shop-top">
+          <span class="shop-net">WALANG STUDIO SHOPPING NETWORK</span>
+          <span class="shop-live">● LIVE</span>
+          <span class="shop-clock" data-shopclock>00:00:00</span>
+        </div>
+        <div class="shop-scroll scroll-region">
+
+          <div class="shop-item">
+            <div class="shop-art"><image-slot id="app1" placeholder="App screenshot"></image-slot></div>
+            <div class="shop-info">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-1001</div>
+              <h2 class="shop-name">TASKLY — THE TO-DO THAT GETS IT DONE</h2>
+              <p class="shop-desc">The handsome little planner that keeps your whole day on one screen. You'll wonder how you lived without it!</p>
+              <div class="shop-pricerow">
+                <span class="shop-was">WAS $9.99</span>
+                <span class="shop-now"><small>TODAY ONLY</small>FREE</span>
+              </div>
+              <div class="shop-call">CALL NOW · 1-800-WALANG-1</div>
+              <div class="shop-stock">⚠ ONLY A FEW LEFT IN STOCK</div>
+            </div>
+          </div>
+
+          <div class="shop-item">
+            <div class="shop-art"><image-slot id="app2" placeholder="App screenshot"></image-slot></div>
+            <div class="shop-info">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-1002</div>
+              <h2 class="shop-name">SNAPNOTE — CAPTURE EVERY BRIGHT IDEA</h2>
+              <p class="shop-desc">Jot, sketch, and snap in a flash. It's like a notebook that never runs out of pages — and it fits in your pocket!</p>
+              <div class="shop-pricerow">
+                <span class="shop-was">WAS $14.99</span>
+                <span class="shop-now"><small>TODAY ONLY</small>FREE</span>
+              </div>
+              <div class="shop-call">CALL NOW · 1-800-WALANG-2</div>
+              <div class="shop-stock">⚠ THIS DEAL WON'T LAST</div>
+            </div>
+          </div>
+
+          <div class="shop-item">
+            <div class="shop-art"><image-slot id="app3" placeholder="App screenshot"></image-slot></div>
+            <div class="shop-info">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-1003</div>
+              <h2 class="shop-name">METRONOME+ — KEEP PERFECT TIME</h2>
+              <p class="shop-desc">Practicing musicians, listen up! A studio-grade metronome with the warmest tick you ever heard. Operators are standing by!</p>
+              <div class="shop-pricerow">
+                <span class="shop-was">WAS $4.99</span>
+                <span class="shop-now"><small>TODAY ONLY</small>FREE</span>
+              </div>
+              <div class="shop-call">CALL NOW · 1-800-WALANG-3</div>
+              <div class="shop-stock">⚠ ALMOST SOLD OUT</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="shop-orderbar"><div class="shop-orderbar-inner" data-shopticker>
+          ORDER NOW · SUPPLIES ARE LIMITED · ALL MAJOR CARDS ACCEPTED · CALL 1-800-WALANG · NO C.O.D. · ALLOW 4–6 WEEKS FOR DELIGHT · ▲ SCROLL UP TO RETURN TO MENU ·&nbsp;
+        </div></div>
+      </section>
+
+      <!-- 404 / error — kept on the no-signal screen -->
+      <section class="channel offair-channel" id="ch-404" data-screen-label="No Signal (error)">
+        <div class="offair-overlay">
+          <div class="offair-label">NO SIGNAL</div>
+        </div>
+      </section>
+
+      <!-- CONTACT — VIDEO 4: cartoon fan-mail segment -->
+      <section class="channel toon-channel" id="ch-contact" data-screen-label="Contact">
+        <div class="toon-stage">
+          <div class="toon-vignette"></div>
+          <div class="toon-card contact-toon">
+            <div class="toon-title small">
+              <span class="tw-word"><span class="tw" style="--d:0">W</span><span class="tw" style="--d:1">R</span><span class="tw" style="--d:2">I</span><span class="tw" style="--d:3">T</span><span class="tw" style="--d:4">E</span></span>
+              <span class="tw-word"><span class="tw" style="--d:5">U</span><span class="tw" style="--d:6">S</span><span class="tw" style="--d:7">!</span></span>
+            </div>
+            <p class="toon-lead tiny">Drop a line in the mailbox—we read every one.</p>
+            <form class="toon-form" id="contact-form" novalidate>
+              <div class="toon-field"><label for="cf-name">YOUR NAME</label><input id="cf-name" name="name" type="text" autocomplete="off" /></div>
+              <div class="toon-field"><label for="cf-email">WHERE TO WRITE BACK</label><input id="cf-email" name="email" type="email" autocomplete="off" /></div>
+              <div class="toon-field"><label for="cf-msg">SAY HELLO</label><textarea id="cf-msg" name="message"></textarea></div>
+              <button class="toon-btn" type="submit">MAIL IT! ✉</button>
+              <div class="toon-status" id="form-status"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONNECT — cable information / program-guide channel -->
+      <section class="channel guide-channel" id="ch-code" data-screen-label="Connect (info channel)">
+        <div class="guide">
+          <div class="guide-top">
+            <span class="guide-bug">WALANG STUDIO</span>
+            <span class="guide-title">INFORMATION CHANNEL</span>
+            <span class="guide-clock" data-ttclock>SAT 00:00</span>
+          </div>
+          <div class="guide-sub">DIRECTORY OF SERVICES</div>
+          <div class="guide-list">
+            <a class="guide-row" href="https://github.com/walangstudio" target="_blank" rel="noopener">
+              <span class="g-cat">GITHUB</span><span class="g-dots"></span><span class="g-val">github.com/walangstudio</span>
+            </a>
+            <a class="guide-row" href="#" target="_blank" rel="noopener">
+              <span class="g-cat">ITCH.IO</span><span class="g-dots"></span><span class="g-val">walang.itch.io</span>
+            </a>
+            <a class="guide-row" href="#" target="_blank" rel="noopener">
+              <span class="g-cat">INSTAGRAM</span><span class="g-dots"></span><span class="g-val">@walang.studio</span>
+            </a>
+            <a class="guide-row" href="mailto:contact@walang.studio">
+              <span class="g-cat">E-MAIL</span><span class="g-dots"></span><span class="g-val">contact@walang.studio</span>
+            </a>
+          </div>
+          <div class="guide-ticker"><div class="guide-ticker-inner" data-ticker>
+            WALANG STUDIO &nbsp;·&nbsp; SELECT A LISTING WITH YOUR POINTER &nbsp;·&nbsp; LINKS OPEN IN A NEW WINDOW &nbsp;·&nbsp; HAND-BUILT, NO FRAMEWORKS, PURE SIGNAL &nbsp;·&nbsp; SCROLL UP TO RETURN TO MENU &nbsp;·&nbsp;
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ABOUT — end-credits crawl -->
+      <section class="channel credits-channel" id="ch-team" data-screen-label="About">
+        <div class="credits-stage">
+          <div class="credits-roll" data-credits>
+            <div class="cr-block">
+              <div class="cr-role">A WALANG STUDIO PRODUCTION</div>
+            </div>
+            <div class="cr-block cr-statement">
+              <div class="cr-name">We make things nobody asked for.</div>
+              <div class="cr-role">walang studio is an independent creative studio building games, apps &amp; small machines of unusual character.</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">DIRECTED BY</div>
+              <div class="cr-name">The Studio</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">DESIGN &amp; ENGINEERING</div>
+              <div class="cr-name">walang studio</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">GAMES</div>
+              <div class="cr-name">— in production —</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">APPLICATIONS</div>
+              <div class="cr-name">— in production —</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">MUSIC &amp; SOUND</div>
+              <div class="cr-name">Synthesized on set</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">FILMED ON LOCATION</div>
+              <div class="cr-name">The Internet</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">SPECIAL THANKS</div>
+              <div class="cr-name">You, for tuning in</div>
+            </div>
+            <div class="cr-block cr-end">
+              <div class="cr-name">★ walang studio ★</div>
+              <div class="cr-role">© MMXXVI · ALL SIGNALS RESERVED</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
-  </nav>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       GSAP + PLUGINS (free via jsDelivr)
-       ═══════════════════════════════════════════════════════════ -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
-  <script src="script.js"></script>
+    <!-- overlays -->
+    <canvas id="vhs-grain"></canvas>
+    <div id="interlace"></div>
+    <div id="vignette"></div>
+    <canvas id="fx-noise"></canvas>
+    <div id="osd-ch"></div>
+    <div id="osd-vol"></div>
+    <div id="debug"></div>
+
+  </div>
+</div>
+
+<div id="rotate-gate" role="alert">
+  <svg class="rotate-icon" viewBox="0 0 60 96" aria-hidden="true">
+    <rect x="3" y="3" width="54" height="90" rx="9" />
+    <line x1="22" y1="84" x2="38" y2="84" />
+  </svg>
+  <p class="rotate-title">ROTATE DEVICE</p>
+  <p class="rotate-sub">this set is built for landscape</p>
+</div>
+
+<script src="js/noise2.js"></script>
+<script src="js/sound2.js"></script>
+<script src="js/tv2.js"></script>
+<script src="image-slot.js"></script>
 
 </body>
 </html>
