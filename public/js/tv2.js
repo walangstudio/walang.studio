@@ -417,9 +417,16 @@
       }
     }
 
+    let sel = -1;
     return {
+      step(d) {
+        if (!active) return;
+        sel = Math.max(0, Math.min(bars.length - 1, sel < 0 ? (d > 0 ? 0 : bars.length - 1) : sel + d));
+        reveal.setHover(bars[sel]);
+      },
+      activate() { if (active && sel >= 0 && !state.transitioning) changeChannel(bars[sel].dataset.target); },
       enter() {
-        active = true; volAcc = 0;
+        active = true; volAcc = 0; sel = -1;
         closeAll();
         fitLabels();
         audio.setBeep(true);
@@ -652,7 +659,7 @@
   window.addEventListener('touchend', () => { touchY = null; }, { passive: true });
 
   window.addEventListener('keydown', (e) => {
-    if (e.target.matches('input, textarea')) return;
+    if (e.target.matches('input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (e.key === '`') { e.preventDefault(); debug.toggle(); return; }
     if (e.key === 'Escape') { changeChannel('ch-menu'); return; }
@@ -663,10 +670,27 @@
       if (on) { showVolOsd(); showChOsd(state.current); }
       return;
     }
-    if (k === 's' || k === 'm' || k === 'v') { setTS('sound', !tweakState.sound); return; }
-    if (e.key === 'ArrowUp') { e.preventDefault(); const i = ORDER.indexOf(state.current); changeChannel(ORDER[(i - 1 + ORDER.length) % ORDER.length]); }
-    if (e.key === 'ArrowDown') { e.preventDefault(); const i = ORDER.indexOf(state.current); changeChannel(ORDER[(i + 1) % ORDER.length]); }
+    if (k === 'm' || k === 'v') { setTS('sound', !tweakState.sound); return; }
+    const dy = KEY_DY[e.key] ?? KEY_DY[k];
+    if (dy) { e.preventDefault(); keyScroll(dy, e); return; }
+    if (state.current === 'ch-menu') {
+      if (e.key === 'ArrowLeft' || k === 'a') { e.preventDefault(); menu.step(-1); }
+      else if (e.key === 'ArrowRight' || k === 'd') { e.preventDefault(); menu.step(1); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); menu.activate(); }
+    }
   });
+
+  // keys do what the wheel does: same thresholds, same channel hand-offs
+  const KEY_DY = { ArrowDown: 120, s: 120, PageDown: 600, ArrowUp: -120, w: -120, PageUp: -600 };
+  function keyScroll(dy, e) {
+    if (state.transitioning) return;
+    if (state.current === 'ch-menu') { if (dy < 0) changeChannel('ch-hero'); return; }
+    if (SCROLL.includes(state.current)) {
+      const sc = $('#' + state.current + ' .scroll-region');
+      if (sc && !(dy < 0 && sc.scrollTop <= 1)) { sc.scrollBy({ top: dy }); return; }
+    }
+    routeScroll(dy, e);
+  }
 
   // toggle a tweak from anywhere (keyboard, debug) and keep the panel in sync
   function setTS(k, v) {
@@ -683,9 +707,11 @@
       const name = $('#cf-name').value.trim();
       const email = $('#cf-email').value.trim();
       if (!name || !email) { status.textContent = '[ incomplete — name and address required ]'; return; }
-      status.textContent = '[ transmitting... ]';
+      const msg = $('#cf-msg').value.trim();
+      status.textContent = '[ opening your mail program... ]';
       audio.burst(0.3);
-      setTimeout(() => { status.textContent = '[ correspondence received ]'; cform.reset(); }, 900);
+      location.href = 'mailto:contact@walang.studio?subject=' + encodeURIComponent('Hello from ' + name) +
+        '&body=' + encodeURIComponent([msg, name + ' <' + email + '>'].join(String.fromCharCode(10, 10)));
     });
   }
 

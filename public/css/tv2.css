@@ -657,7 +657,7 @@ html, body {
 .guide-top {
   display: flex; align-items: center; gap: 14px;
   background: linear-gradient(#d11a1a, #9c0f0f);
-  padding: clamp(10px, 1.8vh, 20px) clamp(18px, 4vw, 48px);
+  padding: clamp(10px, 1.8vh, 20px) clamp(110px, 12vw, 180px) clamp(10px, 1.8vh, 20px) clamp(18px, 4vw, 48px);
   border-bottom: 3px solid #ffd23c;
 }
 .guide-bug {
@@ -811,3 +811,4 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .rotate-icon { animation: none; transform: rotate(-90deg); }
 }
+.toon-mail { color: #b21800; font-weight: 700; white-space: nowrap; }
