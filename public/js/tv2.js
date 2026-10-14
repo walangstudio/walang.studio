@@ -710,7 +710,7 @@
       const msg = $('#cf-msg').value.trim();
       status.textContent = '[ opening your mail program... ]';
       audio.burst(0.3);
-      location.href = 'mailto:contact@walang.studio?subject=' + encodeURIComponent('Hello from ' + name) +
+      location.href = 'mailto:hello@walang.studio?subject=' + encodeURIComponent('Hello from ' + name) +
         '&body=' + encodeURIComponent([msg, name + ' <' + email + '>'].join(String.fromCharCode(10, 10)));
     });
   }
