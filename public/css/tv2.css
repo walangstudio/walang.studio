@@ -821,3 +821,7 @@ html, body {
   .rotate-icon { animation: none; transform: rotate(-90deg); }
 }
 .toon-mail { color: #b21800; font-weight: 700; white-space: nowrap; }
+
+.promo-cta:focus-visible, .shop-call:focus-visible, .guide-row:focus-visible, .toon-btn:focus-visible, .toon-mail:focus-visible {
+  outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 6px #000;
+}

@@ -273,7 +273,7 @@
         startVol = Math.max(audio.master, VOL_BASE);
         heroNoise.start();
         audio.setHiss(true);
-        hintTimer = setTimeout(() => heroHint.classList.add('show'), HERO_HINT_MS);
+        hintTimer = setTimeout(() => { heroHint.classList.add('show'); heroHint.removeAttribute('aria-hidden'); }, HERO_HINT_MS);
         (async () => {
           words = await WordsAPI.fetchWords();
           loop(runId);
@@ -286,6 +286,7 @@
         audio.setHiss(false);
         clearTimeout(hintTimer);
         heroHint.classList.remove('show');
+        heroHint.setAttribute('aria-hidden', 'true');
       },
       onWheel,
     };
@@ -640,6 +641,7 @@
   // take an event-shaped object — scroller only preventDefaults when it's at the
   // top, so native scrolling inside games/apps keeps working under a finger.
   function routeScroll(dy, e) {
+    if (e.target && e.target.closest && e.target.closest('form')) return; // let the contact form scroll and keep its text
     const ev = { deltaY: dy, preventDefault: () => e.preventDefault() };
     if (state.transitioning) { e.preventDefault(); return; }
     if (state.current === 'ch-hero') { e.preventDefault(); hero.onWheel(dy); }
@@ -668,6 +670,8 @@
   window.addEventListener('keydown', (e) => {
     if (e.target.matches('input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
+    const dy = KEY_DY[e.key] ?? KEY_DY[k];
+    if (e.repeat && !dy) return;
     if (e.key === '`') { e.preventDefault(); debug.toggle(); return; }
     if (e.key === 'Escape') { changeChannel('ch-menu'); return; }
     if (k === 'i') { setTS('interlace', !tweakState.interlace); return; }
@@ -678,7 +682,6 @@
       return;
     }
     if (k === 'm' || k === 'v') { setTS('sound', !tweakState.sound); return; }
-    const dy = KEY_DY[e.key] ?? KEY_DY[k];
     if (dy) { e.preventDefault(); keyScroll(dy, e); return; }
     if (state.current === 'ch-menu') {
       if (e.key === 'ArrowLeft' || k === 'a') { e.preventDefault(); menu.step(-1); }
@@ -691,11 +694,12 @@
   const KEY_DY = { ArrowDown: 120, s: 120, PageDown: 600, ArrowUp: -120, w: -120, PageUp: -600 };
   function keyScroll(dy, e) {
     if (state.transitioning) return;
-    if (state.current === 'ch-menu') { if (dy < 0) changeChannel('ch-hero'); return; }
+    if (state.current === 'ch-menu') { if (dy < 0 && !e.repeat) changeChannel('ch-hero'); return; }
     if (SCROLL.includes(state.current)) {
       const sc = $('#' + state.current + ' .scroll-region');
       if (sc && !(dy < 0 && sc.scrollTop <= 1)) { sc.scrollBy({ top: dy }); return; }
     }
+    if (e.repeat) return; // a held key must not chain channel hand-offs
     routeScroll(dy, e);
   }
 
