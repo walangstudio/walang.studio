@@ -260,6 +260,10 @@
       }
     }
 
+    const HERO_HINT_MS = 5 * 60 * 1000;
+    const heroHint = $('#hero-hint');
+    let hintTimer = 0;
+
     return {
       enter() {
         active = true; runId++; ffQueue = 0; endReady = false; endAcc = 0; acc = 0; upAcc = 0;
@@ -269,6 +273,7 @@
         startVol = Math.max(audio.master, VOL_BASE);
         heroNoise.start();
         audio.setHiss(true);
+        hintTimer = setTimeout(() => heroHint.classList.add('show'), HERO_HINT_MS);
         (async () => {
           words = await WordsAPI.fetchWords();
           loop(runId);
@@ -279,6 +284,8 @@
         setTyping(false);
         heroNoise.stop();
         audio.setHiss(false);
+        clearTimeout(hintTimer);
+        heroHint.classList.remove('show');
       },
       onWheel,
     };

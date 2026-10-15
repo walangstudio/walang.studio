@@ -138,6 +138,15 @@ html, body {
   animation: cursorblink 0.84s steps(1) infinite;
 }
 .hero-line.typing .hero-cursor { animation: none; opacity: 1; }
+/* subtitle shown after 5 min idle on the home channel */
+.hero-hint {
+  position: absolute; z-index: 3; left: 50%; bottom: clamp(28px, 9vh, 90px); transform: translateX(-50%);
+  max-width: 90%; text-align: center; padding: 2px 14px;
+  font-family: var(--font-osd); font-size: clamp(20px, 2.6vw, 34px); letter-spacing: 1px;
+  color: #fff; background: rgba(0,0,0,0.7); text-shadow: 2px 2px 0 #000;
+  opacity: 0; transition: opacity 1.2s; pointer-events: none;
+}
+.hero-hint.show { opacity: 1; }
 @keyframes cursorblink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 /* ================= SMPTE MENU ================= */
