@@ -1,0 +1,20 @@
+{
+  "name": "walang-studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "deploy": "wrangler deploy",
+    "migrate:local": "wrangler d1 migrations apply walang-studio --local",
+    "migrate:remote": "wrangler d1 migrations apply walang-studio --remote"
+  },
+  "dependencies": {
+    "hono": "^4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4",
+    "typescript": "^5.9.3",
+    "wrangler": "^4"
+  }
+}

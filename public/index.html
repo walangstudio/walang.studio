@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>walang studio</title>
+<link rel="stylesheet" href="css/tv2.css" />
+<style>
+  /* volume OSD blocks */
+  #osd-vol .vb {
+    display: inline-block; width: 0.55em; height: 0.78em; margin-right: 4px;
+    border: 1px solid var(--osd-green); vertical-align: -0.08em;
+  }
+  #osd-vol .vb.fill { background: var(--osd-green); }
+</style>
+</head>
+<body>
+<div id="tv">
+  <div id="screen">
+
+    <div id="channels">
+
+      <!-- HOME — dead channel: real TV noise + original typewriter -->
+      <section class="channel" id="ch-hero" data-screen-label="Home (noise)">
+        <canvas id="hero-noise"></canvas>
+        <div class="hero-layout">
+          <h1 class="hero-line" id="hero-line">
+            <span class="hero-static">walang</span><span class="hero-dyn-wrap"><span
+              id="dynamic-word"></span><span class="hero-cursor" id="hero-cursor">|</span></span>
+          </h1>
+        </div>
+        <p class="hero-hint" id="hero-hint" aria-hidden="true">Keep scrolling, or press &darr; or Page Down, to open the menu</p>
+      </section>
+
+      <!-- SMPTE MENU (AUX) -->
+      <section class="channel" id="ch-menu" data-screen-label="SMPTE Menu">
+        <div class="smpte">
+          <div class="smpte-top">
+            <div class="bar" style="background:var(--smpte-gray)"></div>
+            <div class="bar navbar-bar" data-target="ch-games" style="--bar-color:var(--smpte-yellow)">
+              <div class="vwrap"><div class="vlabel">GAMES</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-apps" style="--bar-color:var(--smpte-cyan)">
+              <div class="vwrap"><div class="vlabel">APPS</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-code" style="--bar-color:var(--smpte-green)">
+              <div class="vwrap"><div class="vlabel">CONNECT</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-contact" style="--bar-color:var(--smpte-magenta)">
+              <div class="vwrap"><div class="vlabel">CONTACT</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar navbar-bar" data-target="ch-team" style="--bar-color:var(--smpte-red)">
+              <div class="vwrap"><div class="vlabel">ABOUT</div></div>
+              <div class="bar-color"></div>
+            </div>
+            <div class="bar" style="background:var(--smpte-blue)"></div>
+          </div>
+          <div class="smpte-mid">
+            <div class="bar" style="flex:1;background:#0000bc"></div>
+            <div class="bar" style="flex:1;background:#131313"></div>
+            <div class="bar" style="flex:1;background:#bc00bc"></div>
+            <div class="bar" style="flex:1;background:#131313"></div>
+            <div class="bar" style="flex:1;background:#00bcbc"></div>
+            <div class="bar" style="flex:1;background:#131313"></div>
+            <div class="bar" style="flex:1;background:#b9b9b9"></div>
+          </div>
+          <div class="smpte-bot">
+            <div class="bar" style="flex:1.4;background:#00214c"></div>
+            <div class="bar" style="flex:1.4;background:#ffffff"></div>
+            <div class="bar" style="flex:1.4;background:#32006a"></div>
+            <div class="bar" style="flex:1.4;background:#0a0a0a"></div>
+            <div class="bar" style="flex:0.5;background:#000000"></div>
+            <div class="bar" style="flex:0.5;background:#1a1a1a"></div>
+            <div class="bar" style="flex:0.5;background:#262626"></div>
+            <div class="bar" style="flex:1.0;background:#0a0a0a"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAMES — VIDEO 1: late-night product commercial -->
+      <section class="channel promo-channel" id="ch-games" data-screen-label="Games (commercial)">
+        <div class="promo-scroll scroll-region">
+
+          <div class="promo-spot" id="game-ahsteroids">
+            <div class="promo-badge">★ FREE ON ITCH ★</div>
+            <div class="promo-art"><img src="img/games/ahsteroids.png" alt="Ah!Steroids cover art" loading="lazy" /></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">NOW PLAYING ON CHANNEL WALANG STUDIO</div>
+              <h2 class="promo-title">AH!STEROIDS</h2>
+              <p class="promo-tag">Two busted ships, one fragile planet, and a control scheme of left and right. The guns fire themselves, so all you have to do is panic well.</p>
+              <ul class="chips"><li class="chip">arcade</li><li class="chip">space</li><li class="chip">difficult</li></ul>
+              <div class="promo-price"><span class="promo-burst">FREE<small>ON ITCH</small></span></div>
+              <a class="promo-cta" href="https://walangstudio.itch.io/ahsteroids" target="_blank" rel="noopener">▶ PLAY NOW</a>
+            </div>
+          </div>
+
+          <div class="promo-spot alt" id="game-sneak">
+            <div class="promo-badge">★ FREE ON ITCH ★</div>
+            <div class="promo-art"><img src="img/games/sneak.png" alt="Sneak cover art" loading="lazy" /></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">BUT WAIT, THERE&#x27;S MORE</div>
+              <h2 class="promo-title">SNEAK</h2>
+              <p class="promo-tag">You are what a very long snake wants for lunch. Dodge it, chop its segments down to zero, then do it again on a meaner level.</p>
+              <ul class="chips"><li class="chip">arcade</li><li class="chip">stealth</li><li class="chip">pixel-art</li></ul>
+              <div class="promo-price"><span class="promo-burst">FREE<small>ON ITCH</small></span></div>
+              <a class="promo-cta" href="https://walangstudio.itch.io/sneak" target="_blank" rel="noopener">▶ PLAY NOW</a>
+            </div>
+          </div>
+
+          <div class="promo-spot" id="game-ebakuw8">
+            <div class="promo-badge">★ COMING SOON ★</div>
+            <div class="promo-art"><div class="promo-soon"><span>COMING<br>SOON</span></div></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">NEXT ON CHANNEL WALANG STUDIO</div>
+              <h2 class="promo-title">EBAKUW8</h2>
+              <p class="promo-tag">Your commute is ruined and the toilet is getting away. Twelve absurd disasters stand between you and it.</p>
+              <ul class="chips"><li class="chip chip-soon">coming-soon</li><li class="chip">comedy</li><li class="chip">browser</li></ul>
+              <span class="promo-cta off" aria-disabled="true">▶ COMING SOON</span>
+            </div>
+          </div>
+
+          <div class="promo-spot alt" id="game-numan">
+            <div class="promo-badge">★ COMING SOON ★</div>
+            <div class="promo-art"><div class="promo-soon"><span>COMING<br>SOON</span></div></div>
+            <div class="promo-copy">
+              <div class="promo-kicker">STAY TUNED</div>
+              <h2 class="promo-title">NYETAVERSE: NUMAN</h2>
+              <p class="promo-tag">Grab a monobloc chair at the kanto, buy pulutan from the sari-sari store, and talk nonsense with strangers. Inuman without the hangover.</p>
+              <ul class="chips"><li class="chip chip-soon">coming-soon</li><li class="chip">multiplayer</li><li class="chip">browser</li></ul>
+              <span class="promo-cta off" aria-disabled="true">▶ COMING SOON</span>
+            </div>
+          </div>
+
+          <div class="promo-end">▲ SCROLL UP TO RETURN TO THE MENU ▲</div>
+        </div>
+      </section>
+
+      <!-- APPS — VIDEO 2: home shopping network -->
+      <section class="channel shop-channel" id="ch-apps" data-screen-label="Apps (shopping)">
+        <div class="shop-top">
+          <span class="shop-net">WALANG STUDIO SHOPPING NETWORK</span>
+          <span class="shop-live">● LIVE</span>
+          <span class="shop-clock" data-shopclock>00:00:00</span>
+        </div>
+        <div class="shop-scroll scroll-region">
+
+          <div class="shop-group"><h2>CLAUDE TOOLS</h2><span>Plugins, mods and skills for Claude Code</span></div>
+          <div class="shop-grid">
+            <article class="shop-card" id="app-conclaude">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2001</div>
+              <h3 class="shop-name">CONCLAUDE</h3>
+              <p class="shop-desc">A side pane listing every prompt you sent Claude Code, with a TL;DR of each answer and a jump back to it.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">mod</li><li class="chip">typescript</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/conclaude" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-pinocchio">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2002</div>
+              <h3 class="shop-name">PINOCCHIO</h3>
+              <p class="shop-desc">A mistake ledger for Claude Code. It counts the mistakes, works out why, feeds repeats back and checks whether that helped.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">hooks</li><li class="chip">python</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/pinocchio" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-marketplace">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2003</div>
+              <h3 class="shop-name">MARKETPLACE</h3>
+              <p class="shop-desc">Plugin marketplace for Claude Code and Codex. Add it, install what you want.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">codex</li><li class="chip">plugins</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/marketplace" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-chatfish">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2004</div>
+              <h3 class="shop-name">CHATFISH</h3>
+              <p class="shop-desc">A fake Twitch chat that watches Claude work and talks back. An audience for a job nobody was watching.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">mod</li><li class="chip">fun</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/chatfish" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-psst">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2005</div>
+              <h3 class="shop-name">PSST</h3>
+              <p class="shop-desc">Ask another Claude model one question without leaving your session. Short for Please Send Smarter Thoughts.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">shell</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/psst" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-chatgipite">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2006</div>
+              <h3 class="shop-name">CHATGIPITE</h3>
+              <p class="shop-desc">Ang chat bot ng mga gipit. Feed it a business idea and it scores it, models the money and drafts the pitch.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">mcp</li><li class="chip">business</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/ChatGipite" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-aus">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2007</div>
+              <h3 class="shop-name">AUS</h3>
+              <p class="shop-desc">Read it as &#x27;ayos&#x27;. A skill that makes Claude explain things in plain English, the way a friend would.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">skill</li><li class="chip">plain-english</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/aus" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-chessus">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2008</div>
+              <h3 class="shop-name">CHESSUS</h3>
+              <p class="shop-desc">Chess inside Claude Code. Play Claude, watch it play itself, or replay famous games while your tests run.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">mod</li><li class="chip">games</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/chessus" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-gd-skills">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2009</div>
+              <h3 class="shop-name">GD-SKILLS</h3>
+              <p class="shop-desc">Game dev plugin for Claude Code: genre templates across Godot, Unity, Unreal, Defold, Roblox and web.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">gamedev</li><li class="chip">plugins</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/gd-skills" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-mememo">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2010</div>
+              <h3 class="shop-name">MEMEMO</h3>
+              <p class="shop-desc">Local, unlimited memory for coding agents. Replaces MEMORY.md so yours stops asking who you are.</p>
+              <ul class="chips"><li class="chip">claude-code</li><li class="chip">memory</li><li class="chip">python</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/mememo" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+          </div>
+          <div class="shop-group"><h2>AGENT TOOLING</h2><span>Safety, sandboxes and plumbing for AI agents</span></div>
+          <div class="shop-grid">
+            <article class="shop-card" id="app-shellter">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2011</div>
+              <h3 class="shop-name">SHELLTER</h3>
+              <p class="shop-desc">Hooks that stop Claude Code, Codex and opencode from running dangerous commands or leaking secrets. Bash, PowerShell and cmd.</p>
+              <ul class="chips"><li class="chip">security</li><li class="chip">hooks</li><li class="chip">node</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/shellter" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-middlewhere">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2012</div>
+              <h3 class="shop-name">MIDDLEWHERE</h3>
+              <p class="shop-desc">A SQL gateway between your agents and your database. Callers get a name and a token, never the credentials, and read-only is enforced there.</p>
+              <ul class="chips"><li class="chip">rust</li><li class="chip">sql</li><li class="chip">security</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/middleWHERE" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-magent">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2013</div>
+              <h3 class="shop-name">MAGENT</h3>
+              <p class="shop-desc">48 specialist developer agents for Claude, served over MCP. The React one handles React.</p>
+              <ul class="chips"><li class="chip">mcp</li><li class="chip">agents</li><li class="chip">python</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/mageNT" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-codetainyrrr">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2014</div>
+              <h3 class="shop-name">CODETAINYRRR</h3>
+              <p class="shop-desc">A Docker sandbox for AI coding CLIs so nothing they install touches your machine. Wipe the volumes whenever.</p>
+              <ul class="chips"><li class="chip">docker</li><li class="chip">sandbox</li><li class="chip">shell</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/codetainyrrr" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-ceauto">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2015</div>
+              <h3 class="shop-name">CEAUTO</h3>
+              <p class="shop-desc">An autonomous CEO as an MCP server. It splits goals into tasks, hands them to sub-agents and stops at your budget.</p>
+              <ul class="chips"><li class="chip">mcp</li><li class="chip">agents</li><li class="chip">node</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/CEAuto" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-pair-pressure">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2016</div>
+              <h3 class="shop-name">PAIR-PRESSURE</h3>
+              <p class="shop-desc">Group chat for AI agents and humans where the backend is just a git repo. No server, no database.</p>
+              <ul class="chips"><li class="chip">mcp</li><li class="chip">git</li><li class="chip">python</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/pair-pressure" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+          </div>
+          <div class="shop-group"><h2>APPS</h2><span>Things you can install</span></div>
+          <div class="shop-grid">
+            <article class="shop-card" id="app-panote">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2017</div>
+              <h3 class="shop-name">PANOTE</h3>
+              <p class="shop-desc">Encrypted notes that never leave your device, on desktop and Android. Nobody else reads them.</p>
+              <ul class="chips"><li class="chip">rust</li><li class="chip">tauri</li><li class="chip">notes</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/panote" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-fa10">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2018</div>
+              <h3 class="shop-name">FA10</h3>
+              <p class="shop-desc">An archiver that makes files bigger on purpose. fa10 restore gives the original back, SHA-256 checked.</p>
+              <ul class="chips"><li class="chip">rust</li><li class="chip">cli</li><li class="chip">joke</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/fa10" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-insmaller">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2019</div>
+              <h3 class="shop-name">INSMALLER</h3>
+              <p class="shop-desc">Describe an install in a TOML file and it runs the steps, so you stop rewriting the same setup script.</p>
+              <ul class="chips"><li class="chip">rust</li><li class="chip">cli</li><li class="chip">devtools</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/insmaller" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+          </div>
+          <div class="shop-group"><h2>LIBRARIES</h2><span>For developers</span></div>
+          <div class="shop-grid">
+            <article class="shop-card" id="app-scoreosis">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2020</div>
+              <h3 class="shop-name">SCOREOSIS</h3>
+              <p class="shop-desc">Leaderboards players can&#x27;t fake. The server replays the inputs in a Lua VM on Cloudflare, so a score only counts if the game really produced it.</p>
+              <ul class="chips"><li class="chip">typescript</li><li class="chip">cloudflare</li><li class="chip">leaderboards</li></ul>
+              <a class="shop-call" href="https://walangstudio.github.io/scoreosis/" target="_blank" rel="noopener">▶ VISIT PAGE</a>
+            </article>
+            <article class="shop-card" id="app-badgetrip">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2021</div>
+              <h3 class="shop-name">BADGETRIP</h3>
+              <p class="shop-desc">Points, streaks, tiers and leaderboards for your app. Zero-dependency core, with adapters for React, Vue, Angular and more.</p>
+              <ul class="chips"><li class="chip">typescript</li><li class="chip">gamification</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/badgetrip" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+            <article class="shop-card" id="app-puwit">
+              <div class="shop-itemcode">ITEM&nbsp;&nbsp;W-2022</div>
+              <h3 class="shop-name">PUWIT</h3>
+              <p class="shop-desc">Post a JSON schema, get a table and six REST endpoints back. PHP and PDO, no ORM.</p>
+              <ul class="chips"><li class="chip">php</li><li class="chip">rest</li><li class="chip">api</li></ul>
+              <a class="shop-call" href="https://github.com/walangstudio/puwit" target="_blank" rel="noopener">▶ ON GITHUB</a>
+            </article>
+          </div>
+        </div>
+        <div class="shop-orderbar"><div class="shop-orderbar-inner" data-shopticker>
+          ALL ITEMS FREE · OPEN SOURCE · NO C.O.D. · NO 1-800 NUMBER, SORRY · ALLOW 4–6 WEEKS FOR DELIGHT · ▲ SCROLL UP TO RETURN TO MENU ·&nbsp;
+        </div></div>
+      </section>
+
+      <!-- 404 / error — kept on the no-signal screen -->
+      <section class="channel offair-channel" id="ch-404" data-screen-label="No Signal (error)">
+        <div class="offair-overlay">
+          <div class="offair-label">NO SIGNAL</div>
+        </div>
+      </section>
+
+      <!-- CONTACT — VIDEO 4: cartoon fan-mail segment -->
+      <section class="channel toon-channel" id="ch-contact" data-screen-label="Contact">
+        <div class="toon-stage">
+          <div class="toon-vignette"></div>
+          <div class="toon-card contact-toon">
+            <div class="toon-title small">
+              <span class="tw-word"><span class="tw" style="--d:0">W</span><span class="tw" style="--d:1">R</span><span class="tw" style="--d:2">I</span><span class="tw" style="--d:3">T</span><span class="tw" style="--d:4">E</span></span>
+              <span class="tw-word"><span class="tw" style="--d:5">U</span><span class="tw" style="--d:6">S</span><span class="tw" style="--d:7">!</span></span>
+            </div>
+            <p class="toon-lead tiny">Drop a line in the mailbox—we read every one. <a class="toon-mail" href="mailto:hello@walang.studio">hello@walang.studio</a></p>
+            <form class="toon-form" id="contact-form" novalidate>
+              <div class="toon-field"><label for="cf-name">YOUR NAME</label><input id="cf-name" name="name" type="text" autocomplete="off" /></div>
+              <div class="toon-field"><label for="cf-email">WHERE TO WRITE BACK</label><input id="cf-email" name="email" type="email" autocomplete="off" /></div>
+              <div class="toon-field"><label for="cf-msg">SAY HELLO</label><textarea id="cf-msg" name="message"></textarea></div>
+              <button class="toon-btn" type="submit">MAIL IT! ✉</button>
+              <div class="toon-status" id="form-status"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONNECT — cable information / program-guide channel -->
+      <section class="channel guide-channel" id="ch-code" data-screen-label="Connect (info channel)">
+        <div class="guide">
+          <div class="guide-top">
+            <span class="guide-bug">WALANG STUDIO</span>
+            <span class="guide-title">INFORMATION CHANNEL</span>
+            <span class="guide-clock" data-ttclock>SAT 00:00</span>
+          </div>
+          <div class="guide-sub">DIRECTORY OF SERVICES</div>
+          <div class="guide-list">
+            <a class="guide-row" href="https://github.com/walangstudio" target="_blank" rel="noopener">
+              <span class="g-cat">GITHUB</span><span class="g-dots"></span><span class="g-val">github.com/walangstudio</span>
+            </a>
+            <a class="guide-row" href="https://walangstudio.itch.io" target="_blank" rel="noopener">
+              <span class="g-cat">ITCH.IO</span><span class="g-dots"></span><span class="g-val">walangstudio.itch.io</span>
+            </a>
+            <a class="guide-row" href="mailto:hello@walang.studio">
+              <span class="g-cat">E-MAIL</span><span class="g-dots"></span><span class="g-val">hello@walang.studio</span>
+            </a>
+          </div>
+          <div class="guide-ticker"><div class="guide-ticker-inner" data-ticker>
+            WALANG STUDIO &nbsp;·&nbsp; SELECT A LISTING WITH YOUR POINTER OR TAB &nbsp;·&nbsp; LINKS OPEN IN A NEW WINDOW &nbsp;·&nbsp; HAND-BUILT, NO FRAMEWORKS, PURE SIGNAL &nbsp;·&nbsp; SCROLL UP TO RETURN TO MENU &nbsp;·&nbsp;
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ABOUT — end-credits crawl -->
+      <section class="channel credits-channel" id="ch-team" data-screen-label="About">
+        <div class="credits-stage">
+          <div class="credits-roll" data-credits>
+            <div class="cr-block">
+              <div class="cr-role">A WALANG STUDIO PRODUCTION</div>
+            </div>
+            <div class="cr-block cr-statement">
+              <div class="cr-name">We make things nobody asked for.</div>
+              <div class="cr-role">walang studio is an independent creative studio building games, apps &amp; small machines of unusual character.</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">DIRECTED BY</div>
+              <div class="cr-name">The Studio</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">DESIGN &amp; ENGINEERING</div>
+              <div class="cr-name">walang studio</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">GAMES</div>
+              <div class="cr-name">Ah!Steroids · Sneak</div>
+              <div class="cr-role">IN PRODUCTION</div>
+              <div class="cr-name">EBAKUW8 · Nyetaverse: Numan</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">APPLICATIONS &amp; TOOLS</div>
+              <div class="cr-name">panote · fa10 · insmaller</div>
+              <div class="cr-name">mememo · chessus · shellter</div>
+              <div class="cr-role">AND MORE ON GITHUB</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">MUSIC &amp; SOUND</div>
+              <div class="cr-name">Synthesized on set</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">FILMED ON LOCATION</div>
+              <div class="cr-name">The Internet</div>
+            </div>
+            <div class="cr-block">
+              <div class="cr-role">SPECIAL THANKS</div>
+              <div class="cr-name">You, for tuning in</div>
+            </div>
+            <div class="cr-block cr-end">
+              <div class="cr-name">★ walang studio ★</div>
+              <div class="cr-role">© MMXXVI · ALL SIGNALS RESERVED</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- overlays -->
+    <canvas id="vhs-grain"></canvas>
+    <div id="interlace"></div>
+    <div id="vignette"></div>
+    <canvas id="fx-noise"></canvas>
+    <div id="osd-ch"></div>
+    <div id="osd-vol"></div>
+    <div id="debug"></div>
+
+  </div>
+</div>
+
+<div id="rotate-gate" role="alert">
+  <svg class="rotate-icon" viewBox="0 0 60 96" aria-hidden="true">
+    <rect x="3" y="3" width="54" height="90" rx="9" />
+    <line x1="22" y1="84" x2="38" y2="84" />
+  </svg>
+  <p class="rotate-title">ROTATE DEVICE</p>
+  <p class="rotate-sub">this set is built for landscape</p>
+</div>
+
+<script src="js/noise2.js"></script>
+<script src="js/sound2.js"></script>
+<script src="js/tv2.js"></script>
+<script src="image-slot.js"></script>
+
+</body>
+</html>

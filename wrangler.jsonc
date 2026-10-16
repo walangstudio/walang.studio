@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "walang-studio",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-12-01",
+  "routes": [
+    { "pattern": "walang.studio/*", "zone_name": "walang.studio" },
+    { "pattern": "www.walang.studio/*", "zone_name": "walang.studio" }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "walang-studio",
+      "database_id": "e9540143-5d6c-4688-993a-3943432613a8"
+    }
+  ],
+  "observability": { "enabled": true }
+}
