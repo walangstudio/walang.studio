@@ -4,8 +4,13 @@ on:
     branches: [main]
   workflow_dispatch:
 concurrency: deploy
+permissions:
+  contents: read
 jobs:
   deploy:
+    # Public repo: only main of this repo deploys, even when run by hand.
+    if: github.repository == 'walangstudio/walang.studio' && github.ref == 'refs/heads/main'
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
