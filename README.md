@@ -62,6 +62,8 @@ curl -X POST http://localhost:8787/api/admin/words \
 
 ## Deploy (Cloudflare account required)
 
+Every push to `main` deploys through `.github/workflows/deploy.yml`. One-time setup, or a manual deploy:
+
 ```bash
 wrangler d1 create walang-studio        # paste database_id into wrangler.jsonc
 npm run migrate:remote

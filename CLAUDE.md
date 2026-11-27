@@ -1,6 +1,6 @@
 # walang.studio
 
-Cloudflare Worker (Hono) + D1, static CRT-TV frontend in `public/`. Deploy by hand: `npx wrangler deploy` (no CI).
+Cloudflare Worker (Hono) + D1, static CRT-TV frontend in `public/`. Push to `main` deploys: `.github/workflows/deploy.yml` runs typecheck then `wrangler deploy` (production environment). `npm run deploy` still works by hand once `wrangler login` is done.
 
 ## Failure log
 - Run `npx wrangler login` before deploying; `wrangler whoami` fails by default on this machine.
